@@ -64,7 +64,7 @@ typedef enum
 //每个独立的延时任务所存储的数据
 typedef struct
 {
-	void 		( *pfun)();		//回调功能函数指针
+	void 		( *pfun)(void);		//回调功能函数指针
 //	uint16_t	us;				//延时长度
 //	uint16_t	timarr;			//加载到ARR的值
 	uint8_t		use_it;			//非零为启用回调函数，否则不回调
@@ -197,7 +197,7 @@ void TimerUs_IT( TimerUs_TypeDef *pTimerUs );
   * @param  pFun        定时中断回调函数,存在一个u8参数，指明任务序号
   * @return 返回任务序号，小于0表示创建失败
   */
-int8_t TimerUs_TaskCreate( TimerUs_TypeDef *pTimerUs, void ( *pFun)( uint8_t TaskNum ) );
+int8_t TimerUs_TaskCreate( TimerUs_TypeDef *pTimerUs, void ( *pFun)(void) );
 
 /**
   * @brief  启用定时器任务

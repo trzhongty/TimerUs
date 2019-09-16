@@ -49,7 +49,7 @@
   * @param  pFun    定时中断回调函数,存在一个u8参数，指明任务序号
   * @return 返回任务序号，小于0表示创建失败
   */
-int8_t TimerUs_TaskCreate( TimerUs_TypeDef *pTimerUs, void ( *pFun)( uint8_t TaskNum ) )
+int8_t TimerUs_TaskCreate( TimerUs_TypeDef *pTimerUs, void ( *pFun)(void) )
 {
     int8_t TaskNum = (int8_t)( pTimerUs->TaskNum ) + 1;
 
