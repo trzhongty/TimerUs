@@ -53,14 +53,13 @@ int8_t TimerUs_TaskCreate( TimerUs_TypeDef *pTimerUs, void ( *pFun)(void) )
 {
     int8_t TaskNum = (int8_t)( pTimerUs->TaskNum ) + 1;
 
-    if ( TaskNum >= TIMERUS_TASK_NUMMAX ||
+    if ( TaskNum > TIMERUS_TASK_NUMMAX ||
          TaskNum < 0 )
         return -1;
 
 	pTimerUs->Task[ TaskNum ].pfun = pFun;
 	pTimerUs->Task[ TaskNum ].state = TIMERUS_READY;
-    ++(pTimerUs->TaskNum);
-	return 0;
+	return (pTimerUs->TaskNum)++;
 }
 
 /**
