@@ -22,6 +22,7 @@ extern "C" {
 
 /* Includes ------------------------------------------------------------------*/
 #include "stdint.h"
+#include "tos_config.h"     //用于统一设置可移植宏定义
 
 /** @addtogroup TimerUs
   * @{
@@ -213,7 +214,12 @@ int8_t TimerUs_TaskCreate( TimerUs_TypeDef *pTimerUs, void ( *pFun)(void) );
   */
 int8_t TimerUs_Start( TimerUs_TypeDef *pTimerUs, uint8_t TaskNum, uint16_t us, uint8_t use_it);
 
-
+/**
+  * @brief  查询指定定时任务是否完成
+  * @param  TaskNum	定时器任务序号
+  * @return 0未结束或者未开始或者错误，1定时任务结束
+  */
+uint8_t TimerUs_IsDone( TimerUs_TypeDef *pTimerUs, uint8_t TaskNum );
 
  /**
   * @}

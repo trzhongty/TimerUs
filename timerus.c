@@ -194,6 +194,16 @@ int8_t TimerUs_Start( TimerUs_TypeDef *pTimerUs, uint8_t TaskNum, uint16_t us, u
 	return 0;
 }
 
+/**
+  * @brief  查询指定定时任务是否完成
+  * @param  TaskNum	定时器任务序号
+  * @return 0未结束或者未开始或者错误，1定时任务结束
+  */
+uint8_t TimerUs_IsDone( TimerUs_TypeDef *pTimerUs, uint8_t TaskNum )
+{
+    return ( TIMERUS_OK == pTimerUs->Task[ TaskNum ].state )?( 1 ):( 0 );
+}
+
 ///函数分组结束花括号
 /**
   * @}
