@@ -100,9 +100,76 @@ void TimerUs_IT( TimerUs_TypeDef *pTimerUs )
 }
 
 /**
+  * @brief  中止正在延时的任务
+  * @note	在定时任务到达指定时间并进行回调之前，调用该函数，将会从定时任务队列中剔除该任务
+  * @param  pTimerUs    定时器主结构体指针
+  * @param  TaskNum	定时器任务序号
+  */
+void TimerUs_AbortTask( TimerUs_TypeDef *pTimerUs, uint8_t TaskNum )
+{
+    static uint8_t i;
+
+    if ( ( TIMERUS_BUSY != pTimerUs->Task[ TaskNum ].state ) ||
+         ( 0 == pTimerUs->WorkNum ) )
+        return;
+    
+    //仅在定时器工作中，且该任务也在队列中时，进行处理
+    TimerUs_HAL_PauseTim( pTimerUs );	        //暂停CNT计数
+    
+    for ( i = 0; i < pTimerUs->WorkNum; i++)
+    {
+        //定位该任务在队列中的序号
+        if ( pTimerUs->TaskNumTab[ i ] == TaskNum )
+            break;
+    }
+    if ( i < pTimerUs->WorkNum )
+    {
+        //说明定位到该任务序号，继续处理
+        uint16_t tmp;
+
+        pTimerUs->Task[ TaskNum ].state = TIMERUS_READY;
+        
+        if ( 0 == i )
+        {
+            //该任务为正在执行的任务
+            //TMP值含义为现在到定时器原本溢出的时间
+            tmp = ( ( TimerUs_HAL_GetTimAutoReload( pTimerUs ) ) - ( TimerUs_HAL_GetTimCounter( pTimerUs ) ) + 1);
+        }
+        else
+        {
+            //该任务为还未执行的任务
+            tmp = pTimerUs->TaskarrTab[ i ] + 1;
+        }
+        if ( --(pTimerUs->WorkNum) )
+        {
+            //下一个任务ARR时间，加上被剔除任务导致的时间差
+            pTimerUs->TaskarrTab[ i + 1 ] += tmp;
+            //任务队列前移
+            for( ; i < pTimerUs->WorkNum; ++i )		
+            {
+                pTimerUs->TaskarrTab[ i ] = pTimerUs->TaskarrTab[ i + 1 ];
+                pTimerUs->TaskNumTab[ i ] = pTimerUs->TaskNumTab[ i + 1 ];
+            }
+            //将其ARR值与tmp值相加作为当前计数的ARR值
+            TimerUs_HAL_SetTimAutoReload( pTimerUs, pTimerUs->TaskarrTab[ 0 ] );
+        }
+        else
+        {
+            //仅有一个任务，剔除就没有其他可执行任务。关闭定时器
+            TimerUs_HAL_StopTimIt( pTimerUs );
+            return;
+        }
+    }
+
+    TimerUs_HAL_EnableTim( pTimerUs );		//恢复CNT计数
+}
+
+
+/**
   * @brief  启用定时器任务
   * @note	参数范围限定，us不得大于65534，不得小于2，
   * 		TaskNum不得大于TimerUs_TASK_NUMMAX
+  * @param  pTimerUs    定时器主结构体指针
   * @param  TaskNum	定时器任务序号
   * @param  us		定时时间，单位us
   * @param  use_it	是否使用中断回调
@@ -116,8 +183,8 @@ int8_t TimerUs_Start( TimerUs_TypeDef *pTimerUs, uint8_t TaskNum, uint16_t us, u
 	uint16_t 	tmp;
 	uint8_t		i;
 	
-	if( TIMERUS_BUSY == pTimerUs->Task[ TaskNum ].state  )
-		return -2;
+    TimerUs_AbortTask( pTimerUs, TaskNum );     //如果该任务已经在进行中，则先剔除后加入
+
 	//pTimerUs->Task[ TaskNum ].us = us;
 	pTimerUs->Task[ TaskNum ].state = TIMERUS_BUSY;
 	pTimerUs->Task[ TaskNum ].use_it = use_it;
@@ -184,7 +251,7 @@ int8_t TimerUs_Start( TimerUs_TypeDef *pTimerUs, uint8_t TaskNum, uint16_t us, u
 		pTimerUs->TaskNumTab[ 0 ] = TaskNum;
         TimerUs_HAL_SetTimAutoReload( pTimerUs, us - 1 );		//设置ARR值
         TimerUs_HAL_SetTimCounter( pTimerUs, 0 );		//清零CNT
-        TimerUs_HAL_EnableTim( pTimerUs );		//恢复CNT计数
+        TimerUs_HAL_StartTimIt( pTimerUs );		//开启定时器
 	}
 	++(pTimerUs->WorkNum);	//任务数+1
 	

@@ -155,6 +155,7 @@ void TimerUs_HAL_StopTimIt( TimerUs_TypeDef *pTimerUs );
 
 /**
   * @brief  开启硬件定时器并开启中断
+  * @note   必须清除中断标志，防止还未计时就中断回调
   * @param  pTimerUs	主结构体指针
   */
 void TimerUs_HAL_StartTimIt( TimerUs_TypeDef *pTimerUs );
@@ -220,6 +221,14 @@ int8_t TimerUs_Start( TimerUs_TypeDef *pTimerUs, uint8_t TaskNum, uint16_t us, u
   * @return 0未结束或者未开始或者错误，1定时任务结束
   */
 uint8_t TimerUs_IsDone( TimerUs_TypeDef *pTimerUs, uint8_t TaskNum );
+
+/**
+  * @brief  中止正在延时的任务
+  * @note	在定时任务到达指定时间并进行回调之前，调用该函数，将会从定时任务队列中剔除该任务
+  * @param  pTimerUs    定时器主结构体指针
+  * @param  TaskNum	定时器任务序号
+  */
+void TimerUs_AbortTask( TimerUs_TypeDef *pTimerUs, uint8_t TaskNum );
 
  /**
   * @}
