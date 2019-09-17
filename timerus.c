@@ -57,8 +57,8 @@ int8_t TimerUs_TaskCreate( TimerUs_TypeDef *pTimerUs, void ( *pFun)(void) )
          TaskNum < 0 )
         return -1;
 
-	pTimerUs->Task[ TaskNum ].pfun = pFun;
-	pTimerUs->Task[ TaskNum ].state = TIMERUS_READY;
+	pTimerUs->Task[ pTimerUs->TaskNum ].pfun = pFun;
+	pTimerUs->Task[ pTimerUs->TaskNum ].state = TIMERUS_READY;
 	return (pTimerUs->TaskNum)++;
 }
 
@@ -69,21 +69,25 @@ int8_t TimerUs_TaskCreate( TimerUs_TypeDef *pTimerUs, void ( *pFun)(void) )
 void TimerUs_IT( TimerUs_TypeDef *pTimerUs )
 {
 	static uint8_t i;
+    static uint8_t TaskNumTmp;
 	
 	TimerUs_HAL_PauseTim( pTimerUs );	//暂停CNT计数
 	do
 	{
-		pTimerUs->Task[ pTimerUs->TaskNumTab[ 0 ] ].state = TIMERUS_OK;	//将第一序列任务状态设为OK
-		
-		if( (pTimerUs->Task[ pTimerUs->TaskNumTab[ 0 ] ]).use_it )	//如果启用了中断回调，则调用回调函数
-			(pTimerUs->Task[ pTimerUs->TaskNumTab[ 0 ] ]).pfun();
-		
+        TaskNumTmp = pTimerUs->TaskNumTab[ 0 ];
+        
+		//执行完一个，序列前移，
 		--(pTimerUs->WorkNum);
-		for( i = 0; i < pTimerUs->WorkNum; ++i )		//执行完一个，序列前移，
+		for( i = 0; i < pTimerUs->WorkNum; ++i )		
 		{
 			pTimerUs->TaskarrTab[ i ] = pTimerUs->TaskarrTab[ i + 1 ];
 			pTimerUs->TaskNumTab[ i ] = pTimerUs->TaskNumTab[ i + 1 ];
 		}
+        
+        pTimerUs->Task[ TaskNumTmp ].state = TIMERUS_OK;	//将第一序列任务状态设为OK
+        
+        if( (pTimerUs->Task[ TaskNumTmp ]).use_it )	//如果启用了中断回调，则调用回调函数
+			(pTimerUs->Task[ TaskNumTmp ]).pfun();
 		
 	}while( ( pTimerUs->WorkNum > 0) && ( 0 == pTimerUs->TaskarrTab[ 0 ]));	//当前要执行的ARR值为0,并且有任务数
 	
