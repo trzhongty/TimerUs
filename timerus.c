@@ -2,12 +2,12 @@
   ******************************************************************************
   * @file    timerus.c
   * @author  trzhongty@163.com
-  * @brief   »ùÓÚµ¥¸öÓ²¼ş¶¨Ê±Æ÷ÊµÏÖµÄ¶àÈÎÎñUS¼¶±ğÖĞ¶Ï»Øµ÷Èí¼ş¶¨Ê±Æ÷
+  * @brief   åŸºäºå•ä¸ªç¡¬ä»¶å®šæ—¶å™¨å®ç°çš„å¤šä»»åŠ¡USçº§åˆ«ä¸­æ–­å›è°ƒè½¯ä»¶å®šæ—¶å™¨
   ******************************************************************************
   * @version 	0.1
-  * @date		2019Äê9ÔÂ12ÈÕ23:33:12
-  * @note		»ùÓÚµ¥¸öÓ²¼ş¶¨Ê±Æ÷ÊµÏÖµÄ¶àÈÎÎñUS¼¶±ğÖĞ¶Ï»Øµ÷Èí¼ş¶¨Ê±Æ÷
-  * @since		³õ´Î´´½¨
+  * @date		2019å¹´9æœˆ12æ—¥23:33:12
+  * @note		åŸºäºå•ä¸ªç¡¬ä»¶å®šæ—¶å™¨å®ç°çš„å¤šä»»åŠ¡USçº§åˆ«ä¸­æ–­å›è°ƒè½¯ä»¶å®šæ—¶å™¨
+  * @since		åˆæ¬¡åˆ›å»º
   *
   @verbatim
   @endverbatim
@@ -32,9 +32,9 @@
   */
 
 /**
-  * @brief  ³õÊ¼»¯¶¨Ê±Æ÷½á¹¹Ìå
-  * @param  pTimerUs    ¶¨Ê±Æ÷Ö÷½á¹¹ÌåÖ¸Õë
-  * @param  TimHandle   Ó²¼ş¶¨Ê±Æ÷¾ä±ú£¨Ö¸Õë£©
+  * @brief  åˆå§‹åŒ–å®šæ—¶å™¨ç»“æ„ä½“
+  * @param  pTimerUs    å®šæ—¶å™¨ä¸»ç»“æ„ä½“æŒ‡é’ˆ
+  * @param  TimHandle   ç¡¬ä»¶å®šæ—¶å™¨å¥æŸ„ï¼ˆæŒ‡é’ˆï¼‰
   */
  void TimerUs_Init( TimerUs_TypeDef *pTimerUs, void * TimHandle )
  {
@@ -44,10 +44,10 @@
  }
 
 /**
-  * @brief  ´´½¨Ò»¸ö¶¨Ê±ÈÎÎñ
-  * @param  pTimerUs    ¶¨Ê±Æ÷Ö÷½á¹¹ÌåÖ¸Õë
-  * @param  pFun    ¶¨Ê±ÖĞ¶Ï»Øµ÷º¯Êı,´æÔÚÒ»¸öu8²ÎÊı£¬Ö¸Ã÷ÈÎÎñĞòºÅ
-  * @return ·µ»ØÈÎÎñĞòºÅ£¬Ğ¡ÓÚ0±íÊ¾´´½¨Ê§°Ü
+  * @brief  åˆ›å»ºä¸€ä¸ªå®šæ—¶ä»»åŠ¡
+  * @param  pTimerUs    å®šæ—¶å™¨ä¸»ç»“æ„ä½“æŒ‡é’ˆ
+  * @param  pFun    å®šæ—¶ä¸­æ–­å›è°ƒå‡½æ•°,å­˜åœ¨ä¸€ä¸ªu8å‚æ•°ï¼ŒæŒ‡æ˜ä»»åŠ¡åºå·
+  * @return è¿”å›ä»»åŠ¡åºå·ï¼Œå°äº0è¡¨ç¤ºåˆ›å»ºå¤±è´¥
   */
 int8_t TimerUs_TaskCreate( TimerUs_TypeDef *pTimerUs, void ( *pFun)(void) )
 {
@@ -63,20 +63,20 @@ int8_t TimerUs_TaskCreate( TimerUs_TypeDef *pTimerUs, void ( *pFun)(void) )
 }
 
 /**
-  * @brief  Ó²¼ş¶¨Ê±Æ÷ÖĞ¶Ïº¯Êı
-  * @param  pTimerUs    ¶¨Ê±Æ÷Ö÷½á¹¹ÌåÖ¸Õë
+  * @brief  ç¡¬ä»¶å®šæ—¶å™¨ä¸­æ–­å‡½æ•°
+  * @param  pTimerUs    å®šæ—¶å™¨ä¸»ç»“æ„ä½“æŒ‡é’ˆ
   */
 void TimerUs_IT( TimerUs_TypeDef *pTimerUs )
 {
 	static uint8_t i;
     static uint8_t TaskNumTmp;
 	
-	TimerUs_HAL_PauseTim( pTimerUs );	//ÔİÍ£CNT¼ÆÊı
+	TimerUs_HAL_PauseTim( pTimerUs );	//æš‚åœCNTè®¡æ•°
 	do
 	{
         TaskNumTmp = pTimerUs->TaskNumTab[ 0 ];
         
-		//Ö´ĞĞÍêÒ»¸ö£¬ĞòÁĞÇ°ÒÆ£¬
+		//æ‰§è¡Œå®Œä¸€ä¸ªï¼Œåºåˆ—å‰ç§»ï¼Œ
 		--(pTimerUs->WorkNum);
 		for( i = 0; i < pTimerUs->WorkNum; ++i )		
 		{
@@ -84,30 +84,30 @@ void TimerUs_IT( TimerUs_TypeDef *pTimerUs )
 			pTimerUs->TaskNumTab[ i ] = pTimerUs->TaskNumTab[ i + 1 ];
 		}
         
-        pTimerUs->Task[ TaskNumTmp ].state = TIMERUS_OK;	//½«µÚÒ»ĞòÁĞÈÎÎñ×´Ì¬ÉèÎªOK
+        pTimerUs->Task[ TaskNumTmp ].state = TIMERUS_OK;	//å°†ç¬¬ä¸€åºåˆ—ä»»åŠ¡çŠ¶æ€è®¾ä¸ºOK
         
-        if( (pTimerUs->Task[ TaskNumTmp ]).use_it )	//Èç¹ûÆôÓÃÁËÖĞ¶Ï»Øµ÷£¬Ôòµ÷ÓÃ»Øµ÷º¯Êı
+        if( (pTimerUs->Task[ TaskNumTmp ]).use_it )	//å¦‚æœå¯ç”¨äº†ä¸­æ–­å›è°ƒï¼Œåˆ™è°ƒç”¨å›è°ƒå‡½æ•°
 			(pTimerUs->Task[ TaskNumTmp ]).pfun();
 		
-	}while( ( pTimerUs->WorkNum > 0) && ( 0 == pTimerUs->TaskarrTab[ 0 ]));	//µ±Ç°ÒªÖ´ĞĞµÄARRÖµÎª0,²¢ÇÒÓĞÈÎÎñÊı
+	}while( ( pTimerUs->WorkNum > 0) && ( 0 == pTimerUs->TaskarrTab[ 0 ]));	//å½“å‰è¦æ‰§è¡Œçš„ARRå€¼ä¸º0,å¹¶ä¸”æœ‰ä»»åŠ¡æ•°
 	
-	if( 0 != pTimerUs->WorkNum )		//²»Ö»ÓĞÒ»¸öÑÓÊ±ÈÎÎñÊ±,Æô¶¯ÏÂÒ»¸öÈÎÎñ
+	if( 0 != pTimerUs->WorkNum )		//ä¸åªæœ‰ä¸€ä¸ªå»¶æ—¶ä»»åŠ¡æ—¶,å¯åŠ¨ä¸‹ä¸€ä¸ªä»»åŠ¡
 	{
-        TimerUs_HAL_SetTimAutoReload( pTimerUs, pTimerUs->TaskarrTab[ 0 ] );		//ÉèÖÃARRÖµ
-		TimerUs_HAL_SetTimCounter( pTimerUs, 0 );   //ÇåÁãCNT
-        TimerUs_HAL_StartTimIt( pTimerUs );         //ÖØĞÂÆô¶¯¶¨Ê±Æ÷
+        TimerUs_HAL_SetTimAutoReload( pTimerUs, pTimerUs->TaskarrTab[ 0 ] );		//è®¾ç½®ARRå€¼
+		TimerUs_HAL_SetTimCounter( pTimerUs, 0 );   //æ¸…é›¶CNT
+        TimerUs_HAL_StartTimIt( pTimerUs );         //é‡æ–°å¯åŠ¨å®šæ—¶å™¨
 	}
 	else
 	{
-        TimerUs_HAL_StopTimIt( pTimerUs );		    //¹Ø±Õ¶¨Ê±Æ÷
+        TimerUs_HAL_StopTimIt( pTimerUs );		    //å…³é—­å®šæ—¶å™¨
 	}
 }
 
 /**
-  * @brief  ÖĞÖ¹ÕıÔÚÑÓÊ±µÄÈÎÎñ
-  * @note	ÔÚ¶¨Ê±ÈÎÎñµ½´ïÖ¸¶¨Ê±¼ä²¢½øĞĞ»Øµ÷Ö®Ç°£¬µ÷ÓÃ¸Ãº¯Êı£¬½«»á´Ó¶¨Ê±ÈÎÎñ¶ÓÁĞÖĞÌŞ³ı¸ÃÈÎÎñ
-  * @param  pTimerUs    ¶¨Ê±Æ÷Ö÷½á¹¹ÌåÖ¸Õë
-  * @param  TaskNum	¶¨Ê±Æ÷ÈÎÎñĞòºÅ
+  * @brief  ä¸­æ­¢æ­£åœ¨å»¶æ—¶çš„ä»»åŠ¡
+  * @note	åœ¨å®šæ—¶ä»»åŠ¡åˆ°è¾¾æŒ‡å®šæ—¶é—´å¹¶è¿›è¡Œå›è°ƒä¹‹å‰ï¼Œè°ƒç”¨è¯¥å‡½æ•°ï¼Œå°†ä¼šä»å®šæ—¶ä»»åŠ¡é˜Ÿåˆ—ä¸­å‰”é™¤è¯¥ä»»åŠ¡
+  * @param  pTimerUs    å®šæ—¶å™¨ä¸»ç»“æ„ä½“æŒ‡é’ˆ
+  * @param  TaskNum	å®šæ—¶å™¨ä»»åŠ¡åºå·
   */
 void TimerUs_AbortTask( TimerUs_TypeDef *pTimerUs, uint8_t TaskNum )
 {
@@ -117,169 +117,169 @@ void TimerUs_AbortTask( TimerUs_TypeDef *pTimerUs, uint8_t TaskNum )
          ( 0 == pTimerUs->WorkNum ) )
         return;
     
-    //½öÔÚ¶¨Ê±Æ÷¹¤×÷ÖĞ£¬ÇÒ¸ÃÈÎÎñÒ²ÔÚ¶ÓÁĞÖĞÊ±£¬½øĞĞ´¦Àí
-    TimerUs_HAL_PauseTim( pTimerUs );	        //ÔİÍ£CNT¼ÆÊı
+    //ä»…åœ¨å®šæ—¶å™¨å·¥ä½œä¸­ï¼Œä¸”è¯¥ä»»åŠ¡ä¹Ÿåœ¨é˜Ÿåˆ—ä¸­æ—¶ï¼Œè¿›è¡Œå¤„ç†
+    TimerUs_HAL_PauseTim( pTimerUs );	        //æš‚åœCNTè®¡æ•°
     
     for ( i = 0; i < pTimerUs->WorkNum; i++)
     {
-        //¶¨Î»¸ÃÈÎÎñÔÚ¶ÓÁĞÖĞµÄĞòºÅ
+        //å®šä½è¯¥ä»»åŠ¡åœ¨é˜Ÿåˆ—ä¸­çš„åºå·
         if ( pTimerUs->TaskNumTab[ i ] == TaskNum )
             break;
     }
     if ( i < pTimerUs->WorkNum )
     {
-        //ËµÃ÷¶¨Î»µ½¸ÃÈÎÎñĞòºÅ£¬¼ÌĞø´¦Àí
+        //è¯´æ˜å®šä½åˆ°è¯¥ä»»åŠ¡åºå·ï¼Œç»§ç»­å¤„ç†
         uint16_t tmp;
 
         pTimerUs->Task[ TaskNum ].state = TIMERUS_READY;
         
         if ( 0 == i )
         {
-            //¸ÃÈÎÎñÎªÕıÔÚÖ´ĞĞµÄÈÎÎñ
-            //TMPÖµº¬ÒåÎªÏÖÔÚµ½¶¨Ê±Æ÷Ô­±¾Òç³öµÄÊ±¼ä
+            //è¯¥ä»»åŠ¡ä¸ºæ­£åœ¨æ‰§è¡Œçš„ä»»åŠ¡
+            //TMPå€¼å«ä¹‰ä¸ºç°åœ¨åˆ°å®šæ—¶å™¨åŸæœ¬æº¢å‡ºçš„æ—¶é—´
             tmp = ( ( TimerUs_HAL_GetTimAutoReload( pTimerUs ) ) - ( TimerUs_HAL_GetTimCounter( pTimerUs ) ) + 1);
         }
         else
         {
-            //¸ÃÈÎÎñÎª»¹Î´Ö´ĞĞµÄÈÎÎñ
+            //è¯¥ä»»åŠ¡ä¸ºè¿˜æœªæ‰§è¡Œçš„ä»»åŠ¡
             tmp = pTimerUs->TaskarrTab[ i ] + 1;
         }
         if ( --(pTimerUs->WorkNum) )
         {
-            //ÏÂÒ»¸öÈÎÎñARRÊ±¼ä£¬¼ÓÉÏ±»ÌŞ³ıÈÎÎñµ¼ÖÂµÄÊ±¼ä²î
+            //ä¸‹ä¸€ä¸ªä»»åŠ¡ARRæ—¶é—´ï¼ŒåŠ ä¸Šè¢«å‰”é™¤ä»»åŠ¡å¯¼è‡´çš„æ—¶é—´å·®
             pTimerUs->TaskarrTab[ i + 1 ] += tmp;
-            //ÈÎÎñ¶ÓÁĞÇ°ÒÆ
+            //ä»»åŠ¡é˜Ÿåˆ—å‰ç§»
             for( ; i < pTimerUs->WorkNum; ++i )		
             {
                 pTimerUs->TaskarrTab[ i ] = pTimerUs->TaskarrTab[ i + 1 ];
                 pTimerUs->TaskNumTab[ i ] = pTimerUs->TaskNumTab[ i + 1 ];
             }
-            //½«ÆäARRÖµÓëtmpÖµÏà¼Ó×÷Îªµ±Ç°¼ÆÊıµÄARRÖµ
+            //å°†å…¶ARRå€¼ä¸tmpå€¼ç›¸åŠ ä½œä¸ºå½“å‰è®¡æ•°çš„ARRå€¼
             TimerUs_HAL_SetTimAutoReload( pTimerUs, pTimerUs->TaskarrTab[ 0 ] );
         }
         else
         {
-            //½öÓĞÒ»¸öÈÎÎñ£¬ÌŞ³ı¾ÍÃ»ÓĞÆäËû¿ÉÖ´ĞĞÈÎÎñ¡£¹Ø±Õ¶¨Ê±Æ÷
+            //ä»…æœ‰ä¸€ä¸ªä»»åŠ¡ï¼Œå‰”é™¤å°±æ²¡æœ‰å…¶ä»–å¯æ‰§è¡Œä»»åŠ¡ã€‚å…³é—­å®šæ—¶å™¨
             TimerUs_HAL_StopTimIt( pTimerUs );
             return;
         }
     }
 
-    TimerUs_HAL_EnableTim( pTimerUs );		//»Ö¸´CNT¼ÆÊı
+    TimerUs_HAL_EnableTim( pTimerUs );		//æ¢å¤CNTè®¡æ•°
 }
 
 
 /**
-  * @brief  ÆôÓÃ¶¨Ê±Æ÷ÈÎÎñ
-  * @note	²ÎÊı·¶Î§ÏŞ¶¨£¬us²»µÃ´óÓÚ65534£¬²»µÃĞ¡ÓÚ2£¬
-  * 		TaskNum²»µÃ´óÓÚTimerUs_TASK_NUMMAX
-  * @param  pTimerUs    ¶¨Ê±Æ÷Ö÷½á¹¹ÌåÖ¸Õë
-  * @param  TaskNum	¶¨Ê±Æ÷ÈÎÎñĞòºÅ
-  * @param  us		¶¨Ê±Ê±¼ä£¬µ¥Î»us
-  * @param  use_it	ÊÇ·ñÊ¹ÓÃÖĞ¶Ï»Øµ÷
-  * @return ³É¹¦Óë·ñ
-  * @retval 0	³É¹¦
-  * 		-1	Ê§°Ü
-  * 		-2	·±Ã¦
+  * @brief  å¯ç”¨å®šæ—¶å™¨ä»»åŠ¡
+  * @note	å‚æ•°èŒƒå›´é™å®šï¼Œusä¸å¾—å¤§äº65534ï¼Œä¸å¾—å°äº2ï¼Œ
+  * 		TaskNumä¸å¾—å¤§äºTimerUs_TASK_NUMMAX
+  * @param  pTimerUs    å®šæ—¶å™¨ä¸»ç»“æ„ä½“æŒ‡é’ˆ
+  * @param  TaskNum	å®šæ—¶å™¨ä»»åŠ¡åºå·
+  * @param  us		å®šæ—¶æ—¶é—´ï¼Œå•ä½us
+  * @param  use_it	æ˜¯å¦ä½¿ç”¨ä¸­æ–­å›è°ƒ
+  * @return æˆåŠŸä¸å¦
+  * @retval 0	æˆåŠŸ
+  * 		-1	å¤±è´¥
+  * 		-2	ç¹å¿™
   */
 int8_t TimerUs_Start( TimerUs_TypeDef *pTimerUs, uint8_t TaskNum, uint16_t us, uint8_t use_it)
 {
 	uint16_t 	tmp;
 	uint8_t		i;
 	
-    TimerUs_AbortTask( pTimerUs, TaskNum );     //Èç¹û¸ÃÈÎÎñÒÑ¾­ÔÚ½øĞĞÖĞ£¬ÔòÏÈÌŞ³ıºó¼ÓÈë
+    TimerUs_AbortTask( pTimerUs, TaskNum );     //å¦‚æœè¯¥ä»»åŠ¡å·²ç»åœ¨è¿›è¡Œä¸­ï¼Œåˆ™å…ˆå‰”é™¤ååŠ å…¥
 
 	//pTimerUs->Task[ TaskNum ].us = us;
 	pTimerUs->Task[ TaskNum ].state = TIMERUS_BUSY;
 	pTimerUs->Task[ TaskNum ].use_it = use_it;
 	
-	//¸ù¾İ¶¨Ê±Æ÷µÄ×´Ì¬£¬²»Í¬µÄ²åÈë¹¦ÄÜĞÎÊ½
-	if( pTimerUs->WorkNum != 0)		//Èç¹û´¦ÓÚ¹¤×÷×´Ì¬
+	//æ ¹æ®å®šæ—¶å™¨çš„çŠ¶æ€ï¼Œä¸åŒçš„æ’å…¥åŠŸèƒ½å½¢å¼
+	if( pTimerUs->WorkNum != 0)		//å¦‚æœå¤„äºå·¥ä½œçŠ¶æ€
 	{
-        TimerUs_HAL_PauseTim( pTimerUs );	        //ÔİÍ£CNT¼ÆÊı
-        TimerUs_HAL_DisableTimIt( pTimerUs );       //¹Ø±ÕÖĞ¶ÏÊ¹ÄÜ£¬·ÀÖ¹ÖĞÍ¾¸Ä±ä
+        TimerUs_HAL_PauseTim( pTimerUs );	        //æš‚åœCNTè®¡æ•°
+        TimerUs_HAL_DisableTimIt( pTimerUs );       //å…³é—­ä¸­æ–­ä½¿èƒ½ï¼Œé˜²æ­¢ä¸­é€”æ”¹å˜
 		
-		tmp = ( ( TimerUs_HAL_GetTimAutoReload( pTimerUs ) ) - ( TimerUs_HAL_GetTimCounter( pTimerUs ) ) + 1);	//TMPÖµº¬ÒåÎªÏÖÔÚµ½¶¨Ê±Æ÷Ô­±¾Òç³öµÄÊ±¼ä
-		if( tmp > us)		//Èç¹ûµ±Ç°¼ÆÊ±Ä£Ê½Ê£ÓàÊ±¼ä´óÓÚ²åÈëÈÎÎñËùĞèÒªµÄÊ±¼ä£¬Ôò½«ÈÎÎñ²åÈëÖÃ×îÇ°¶Ë
+		tmp = ( ( TimerUs_HAL_GetTimAutoReload( pTimerUs ) ) - ( TimerUs_HAL_GetTimCounter( pTimerUs ) ) + 1);	//TMPå€¼å«ä¹‰ä¸ºç°åœ¨åˆ°å®šæ—¶å™¨åŸæœ¬æº¢å‡ºçš„æ—¶é—´
+		if( tmp > us)		//å¦‚æœå½“å‰è®¡æ—¶æ¨¡å¼å‰©ä½™æ—¶é—´å¤§äºæ’å…¥ä»»åŠ¡æ‰€éœ€è¦çš„æ—¶é—´ï¼Œåˆ™å°†ä»»åŠ¡æ’å…¥ç½®æœ€å‰ç«¯
 		{
-            //½«CNTÖµÔö¼ÓÌáÇ°£¬Ê¹µÃ´ÓÏÖÔÚ¿ªÊ¼¼ÆÊ±Òç³öµÄÊ±¼äÎª±¾´Î²åÈëÈÎÎñµÄÒªÇóÊ±¼ä
+            //å°†CNTå€¼å¢åŠ æå‰ï¼Œä½¿å¾—ä»ç°åœ¨å¼€å§‹è®¡æ—¶æº¢å‡ºçš„æ—¶é—´ä¸ºæœ¬æ¬¡æ’å…¥ä»»åŠ¡çš„è¦æ±‚æ—¶é—´
             TimerUs_HAL_SetTimCounter( pTimerUs, TimerUs_HAL_GetTimCounter( pTimerUs ) + tmp - us );
             
-			TimerUs_HAL_EnableTim( pTimerUs );		//»Ö¸´CNT¼ÆÊı
+			TimerUs_HAL_EnableTim( pTimerUs );		//æ¢å¤CNTè®¡æ•°
 			
-			for( i = pTimerUs->WorkNum; i > 0; --i )		//²åÈëÖÁ×îÇ°¶Ë£¬ËùÓĞÈÎÎñºóÒÆ
+			for( i = pTimerUs->WorkNum; i > 0; --i )		//æ’å…¥è‡³æœ€å‰ç«¯ï¼Œæ‰€æœ‰ä»»åŠ¡åç§»
 			{
 				pTimerUs->TaskNumTab[ i ] = pTimerUs->TaskNumTab[ i - 1 ];
 				pTimerUs->TaskarrTab[ i ] = pTimerUs->TaskarrTab[ i - 1 ];
 			}
-			pTimerUs->TaskarrTab[ 1 ] = tmp - 1;	//Ô­±¾´¦ÓÚ¹¤×÷µÄÑÓÊ±ÈÎÎñ±»ÖÍºó£¬ÖÍºóµÄARRÖµÎªÊ£ÓàÊ±¼äÖµ,¶øºóĞøÈÎÎñÊ±¼ä²»±ä
-			pTimerUs->TaskarrTab[ 0 ] = us - 1;		//¸ÃÖµ²»ÖØÒª
-			pTimerUs->TaskNumTab[ 0 ] = TaskNum;	//¼ÇÂ¼ÈÎÎñ±êºÅ	
+			pTimerUs->TaskarrTab[ 1 ] = tmp - 1;	//åŸæœ¬å¤„äºå·¥ä½œçš„å»¶æ—¶ä»»åŠ¡è¢«æ»åï¼Œæ»åçš„ARRå€¼ä¸ºå‰©ä½™æ—¶é—´å€¼,è€Œåç»­ä»»åŠ¡æ—¶é—´ä¸å˜
+			pTimerUs->TaskarrTab[ 0 ] = us - 1;		//è¯¥å€¼ä¸é‡è¦
+			pTimerUs->TaskNumTab[ 0 ] = TaskNum;	//è®°å½•ä»»åŠ¡æ ‡å·	
 		}
-		else	//·ñÔòÈÎÎñ½«²åÈëÖÁ´ÓĞ¡µ½´óµÄË³ĞòÖĞ
+		else	//å¦åˆ™ä»»åŠ¡å°†æ’å…¥è‡³ä»å°åˆ°å¤§çš„é¡ºåºä¸­
 		{
-			TimerUs_HAL_EnableTim( pTimerUs );		//»Ö¸´CNT¼ÆÊı
+			TimerUs_HAL_EnableTim( pTimerUs );		//æ¢å¤CNTè®¡æ•°
 			
-			for( i = 1, us -= tmp; i < pTimerUs->WorkNum; ++i )		//ÈÎÎñÒÀ´Î´ÓÇ°ÏòºóÀÛ¼Ó±È½Ï
+			for( i = 1, us -= tmp; i < pTimerUs->WorkNum; ++i )		//ä»»åŠ¡ä¾æ¬¡ä»å‰å‘åç´¯åŠ æ¯”è¾ƒ
 			{
-				if( us < pTimerUs->TaskarrTab[ i ] + 1)		//²åÈëÈÎÎñĞ¡ÓÚµ±Ç°ĞòÁĞµÄÊ±¼äÖµ£¬Ôò²åÈë¸ÃĞòÁĞ
+				if( us < pTimerUs->TaskarrTab[ i ] + 1)		//æ’å…¥ä»»åŠ¡å°äºå½“å‰åºåˆ—çš„æ—¶é—´å€¼ï¼Œåˆ™æ’å…¥è¯¥åºåˆ—
 				{
-					for( tmp = pTimerUs->WorkNum; tmp > i + 1; ++tmp)	//²åÈëÖÁĞòÁĞi£¬iºóËùÓĞÈÎÎñºóÒÆ£¬³ıÁË±»²åÈëµã£¬ÆäËûºóĞøÈÎÎñĞòºÅºóÒÆ£¬ARR²»±ä
+					for( tmp = pTimerUs->WorkNum; tmp > i + 1; ++tmp)	//æ’å…¥è‡³åºåˆ—iï¼Œiåæ‰€æœ‰ä»»åŠ¡åç§»ï¼Œé™¤äº†è¢«æ’å…¥ç‚¹ï¼Œå…¶ä»–åç»­ä»»åŠ¡åºå·åç§»ï¼ŒARRä¸å˜
 					{
 						pTimerUs->TaskNumTab[ tmp ] = pTimerUs->TaskNumTab[ tmp - 1 ];
 						pTimerUs->TaskarrTab[ tmp ] = pTimerUs->TaskarrTab[ tmp - 1 ];
 					}
-					pTimerUs->TaskarrTab[ i + 1 ] = pTimerUs->TaskarrTab[ i ] - us;		//±»²åÈëµÄÈÎÎñºóÒÆÒ»¸öĞòºÅ£¬ÇÒARRÖµ¼õÈ¥US
+					pTimerUs->TaskarrTab[ i + 1 ] = pTimerUs->TaskarrTab[ i ] - us;		//è¢«æ’å…¥çš„ä»»åŠ¡åç§»ä¸€ä¸ªåºå·ï¼Œä¸”ARRå€¼å‡å»US
 					pTimerUs->TaskNumTab[ i + 1 ] = pTimerUs->TaskNumTab[ i ];
 					
-					pTimerUs->TaskarrTab[ i ] = us - 1;		//ĞÂÈÎÎñ²åÈë
+					pTimerUs->TaskarrTab[ i ] = us - 1;		//æ–°ä»»åŠ¡æ’å…¥
 					pTimerUs->TaskNumTab[ i ] = TaskNum;
-					i = 0;	//ÓÃi=0À´±êÊ¶£¬ÒÑÕÒµ½²åÈëµãÇé¿ö£¬
+					i = 0;	//ç”¨i=0æ¥æ ‡è¯†ï¼Œå·²æ‰¾åˆ°æ’å…¥ç‚¹æƒ…å†µï¼Œ
 					break;
 				}
 				else
 				{
-					us -= pTimerUs->TaskarrTab[ i ] + 1;	//²åÈëÈÎÎñ´óÓÚµ±Ç°ĞòÁĞÊ±¼äÖµ£¬¼õÈ¥Õâ¸öÊ±¼ä²î£¬ºóÒÆ
+					us -= pTimerUs->TaskarrTab[ i ] + 1;	//æ’å…¥ä»»åŠ¡å¤§äºå½“å‰åºåˆ—æ—¶é—´å€¼ï¼Œå‡å»è¿™ä¸ªæ—¶é—´å·®ï¼Œåç§»
 				}
 			}
-			if( 0 != i )	//Èç¹ûi²»Îª0£¬ËµÃ÷Ã»ÓĞÕÒµ½²åÈëµã£¬ÔòÖ±½Ó²åÈëÖÁ×îºó
+			if( 0 != i )	//å¦‚æœiä¸ä¸º0ï¼Œè¯´æ˜æ²¡æœ‰æ‰¾åˆ°æ’å…¥ç‚¹ï¼Œåˆ™ç›´æ¥æ’å…¥è‡³æœ€å
 			{
 				pTimerUs->TaskarrTab[ pTimerUs->WorkNum ] = us - 1;
 				pTimerUs->TaskNumTab[ pTimerUs->WorkNum ] = TaskNum;
 			}
 		}
 	}
-	else		//²»´¦ÓÚ¹¤×÷×´Ì¬£¬Ö±½Ó·ÅÖÃµÚÒ»ĞòÁĞ
+	else		//ä¸å¤„äºå·¥ä½œçŠ¶æ€ï¼Œç›´æ¥æ”¾ç½®ç¬¬ä¸€åºåˆ—
 	{
 		pTimerUs->TaskarrTab[ 0 ] = us - 1;
 		pTimerUs->TaskNumTab[ 0 ] = TaskNum;
-        TimerUs_HAL_SetTimAutoReload( pTimerUs, us - 1 );		//ÉèÖÃARRÖµ
-        TimerUs_HAL_SetTimCounter( pTimerUs, 0 );		//ÇåÁãCNT
-        TimerUs_HAL_StartTimIt( pTimerUs );		//¿ªÆô¶¨Ê±Æ÷
+        TimerUs_HAL_SetTimAutoReload( pTimerUs, us - 1 );		//è®¾ç½®ARRå€¼
+        TimerUs_HAL_SetTimCounter( pTimerUs, 0 );		//æ¸…é›¶CNT
+        TimerUs_HAL_StartTimIt( pTimerUs );		//å¼€å¯å®šæ—¶å™¨
 	}
-	++(pTimerUs->WorkNum);	//ÈÎÎñÊı+1
+	++(pTimerUs->WorkNum);	//ä»»åŠ¡æ•°+1
 	
-	TimerUs_HAL_EnableTimIt( pTimerUs );		//¿ªÆôÖĞ¶Ï
+	TimerUs_HAL_EnableTimIt( pTimerUs );		//å¼€å¯ä¸­æ–­
 	
 	return 0;
 }
 
 /**
-  * @brief  ²éÑ¯Ö¸¶¨¶¨Ê±ÈÎÎñÊÇ·ñÍê³É
-  * @param  TaskNum	¶¨Ê±Æ÷ÈÎÎñĞòºÅ
-  * @return 0Î´½áÊø»òÕßÎ´¿ªÊ¼»òÕß´íÎó£¬1¶¨Ê±ÈÎÎñ½áÊø
+  * @brief  æŸ¥è¯¢æŒ‡å®šå®šæ—¶ä»»åŠ¡æ˜¯å¦å®Œæˆ
+  * @param  TaskNum	å®šæ—¶å™¨ä»»åŠ¡åºå·
+  * @return 0æœªç»“æŸæˆ–è€…æœªå¼€å§‹æˆ–è€…é”™è¯¯ï¼Œ1å®šæ—¶ä»»åŠ¡ç»“æŸ
   */
 uint8_t TimerUs_IsDone( TimerUs_TypeDef *pTimerUs, uint8_t TaskNum )
 {
     return ( TIMERUS_OK == pTimerUs->Task[ TaskNum ].state )?( 1 ):( 0 );
 }
 
-///º¯Êı·Ö×é½áÊø»¨À¨ºÅ
+///å‡½æ•°åˆ†ç»„ç»“æŸèŠ±æ‹¬å·
 /**
   * @}
   */
 
-///Ä£¿é·Ö×é½áÊø»¨À¨ºÅ
+///æ¨¡å—åˆ†ç»„ç»“æŸèŠ±æ‹¬å·
 /**
   * @}
   */

@@ -2,12 +2,12 @@
   ******************************************************************************
   * @file    timerus.h
   * @author  ThinkHome
-  * @brief   ���ڵ���Ӳ����ʱ��ʵ�ֵĶ�����US�����жϻص�������ʱ��
+  * @brief   基于单个硬件定时器实现的多任务US级别中断回调软件定时器
   ******************************************************************************
   * @version 	0.1
-  * @date		2019��9��12��23:46:52
-  * @note		���ڵ���Ӳ����ʱ��ʵ�ֵĶ�����US�����жϻص�������ʱ��
-  * @since		���δ���
+  * @date		2019年9月12日23:46:52
+  * @note		基于单个硬件定时器实现的多任务US级别中断回调软件定时器
+  * @since		初次创建
   *
   ******************************************************************************
   */
@@ -22,7 +22,7 @@ extern "C" {
 
 /* Includes ------------------------------------------------------------------*/
 #include "stdint.h"
-#include "tos_config.h"     //����ͳһ���ÿ���ֲ�궨��
+#include "tos_config.h"     //用于统一设置可移植宏定义
 
 /** @addtogroup TimerUs
   * @{
@@ -33,12 +33,12 @@ extern "C" {
   */
 
 
-/** @defgroup TimerUs ��ֲ��غ궨�����
+/** @defgroup TimerUs 移植相关宏定义分组
   * @{
   */
 
 #ifndef TIMERUS_TASK_NUMMAX
-    #define TIMERUS_TASK_NUMMAX		2		///<�ܹ��ṩ�����������ŵ���ʱ����
+    #define TIMERUS_TASK_NUMMAX		2		///<总共提供两个互补干扰的延时任务
 #endif
 
 /**
@@ -62,26 +62,26 @@ typedef enum
 	TIMERUS_OK 	= 2
 }TimerUs_state_enum;
 
-//ÿ����������ʱ�������洢������
+//每个独立的延时任务所存储的数据
 typedef struct
 {
-	void 		( *pfun)(void);		//�ص����ܺ���ָ��
-//	uint16_t	us;				//��ʱ����
-//	uint16_t	timarr;			//���ص�ARR��ֵ
-	uint8_t		use_it;			//����Ϊ���ûص����������򲻻ص�
-	volatile TimerUs_state_enum state;		//����״̬
+	void 		( *pfun)(void);		//回调功能函数指针
+//	uint16_t	us;				//延时长度
+//	uint16_t	timarr;			//加载到ARR的值
+	uint8_t		use_it;			//非零为启用回调函数，否则不回调
+	volatile TimerUs_state_enum state;		//工作状态
 	
 }TimerUs_Task_TypeDef;
 
 typedef struct
 {
-	TimerUs_Task_TypeDef	Task[ TIMERUS_TASK_NUMMAX ];	//ÿ���������Ϣ�ṹ������
-	uint16_t	TaskNumTab[ TIMERUS_TASK_NUMMAX ];		//������ʱ�����ִ��˳��
-	uint16_t	TaskarrTab[ TIMERUS_TASK_NUMMAX ];	//ÿ����ʱ�����ʱ���,��С�������򣬶�Ӧ���������ΪTaskTab�ڵ����
+	TimerUs_Task_TypeDef	Task[ TIMERUS_TASK_NUMMAX ];	//每个任务的信息结构体数组
+	uint16_t	TaskNumTab[ TIMERUS_TASK_NUMMAX ];		//决定延时任务的执行顺序
+	uint16_t	TaskarrTab[ TIMERUS_TASK_NUMMAX ];	//每个延时任务的时间点,从小到大排序，对应的任务序号为TaskTab内的序号
 	
-    void              * TimHandle;      //��ʱ�����(ָ��)  //���ڷ���Խ�
-	volatile uint8_t	WorkNum;        //��һ�������Ķ�ʱ�������ڼ����������
-    uint8_t             TaskNum;        //��¼��ע�����������,���������
+    void              * TimHandle;      //定时器句柄(指针)  //用于方便对接
+	volatile uint8_t	WorkNum;        //在一次连续的定时器工作期间的任务总数
+    uint8_t             TaskNum;        //记录已注册的任务数量,与序号上限
 	
 }TimerUs_TypeDef;
 
@@ -103,72 +103,72 @@ typedef struct
   * @{
   */
 
- /** @addtogroup TimerUs ����ֲ�ԽӺ����ӿ�
+ /** @addtogroup TimerUs 需移植对接函数接口
   * @{
   */
 
 /**
-  * @brief  ��ͣӲ����ʱ������
-  * @note	ֻ��ͣ������
-  * @param  pTimerUs	���ṹ��ָ��
+  * @brief  暂停硬件定时器计数
+  * @note	只暂停不重置
+  * @param  pTimerUs	主结构体指针
   */
 void TimerUs_HAL_PauseTim( TimerUs_TypeDef *pTimerUs );
 
 /**
-  * @brief  �ָ�Ӳ����ʱ������
-  * @note	ֻ�ָ�������
-  * @param  pTimerUs	���ṹ��ָ��
+  * @brief  恢复硬件定时器计数
+  * @note	只恢复不重置
+  * @param  pTimerUs	主结构体指针
   */
 void TimerUs_HAL_EnableTim( TimerUs_TypeDef *pTimerUs );
 
 /**
-  * @brief  ����Ӳ����ʱ���Զ�����ֵ
-  * @param  pTimerUs	���ṹ��ָ��
-  * 		AutoReload	�Զ�����ֵ
+  * @brief  设置硬件定时器自动重载值
+  * @param  pTimerUs	主结构体指针
+  * 		AutoReload	自动重载值
   */
 void TimerUs_HAL_SetTimAutoReload( TimerUs_TypeDef *pTimerUs , uint16_t AutoReload);
 
 /**
-  * @brief  ��ȡӲ����ʱ���Զ�����ֵ
-  * @param  pTimerUs	���ṹ��ָ��
+  * @brief  获取硬件定时器自动重载值
+  * @param  pTimerUs	主结构体指针
   */
 uint16_t TimerUs_HAL_GetTimAutoReload( TimerUs_TypeDef *pTimerUs);
 
 /**
-  * @brief  ����Ӳ����ʱ��������ֵ
-  * @param  pTimerUs	���ṹ��ָ��
-  * 		Cnt			������ֵ
+  * @brief  设置硬件定时器计数器值
+  * @param  pTimerUs	主结构体指针
+  * 		Cnt			计数器值
   */
 void TimerUs_HAL_SetTimCounter( TimerUs_TypeDef *pTimerUs , uint16_t Cnt);
 
 /**
-  * @brief  ��ȡӲ����ʱ������ֵ
-  * @param  pTimerUs	���ṹ��ָ��
+  * @brief  获取硬件定时器计数值
+  * @param  pTimerUs	主结构体指针
   */
 uint16_t TimerUs_HAL_GetTimCounter( TimerUs_TypeDef *pTimerUs);
 
 /**
-  * @brief  �ر�Ӳ����ʱ�����ر��ж�
-  * @param  pTimerUs	���ṹ��ָ��
+  * @brief  关闭硬件定时器并关闭中断
+  * @param  pTimerUs	主结构体指针
   */
 void TimerUs_HAL_StopTimIt( TimerUs_TypeDef *pTimerUs );
 
 /**
-  * @brief  ����Ӳ����ʱ���������ж�
-  * @note   ��������жϱ�־����ֹ��δ��ʱ���жϻص�
-  * @param  pTimerUs	���ṹ��ָ��
+  * @brief  开启硬件定时器并开启中断
+  * @note   必须清除中断标志，防止还未计时就中断回调
+  * @param  pTimerUs	主结构体指针
   */
 void TimerUs_HAL_StartTimIt( TimerUs_TypeDef *pTimerUs );
 
 /**
-  * @brief  ʹ��Ӳ����ʱ���ж�
-  * @param  pTimerUs	���ṹ��ָ��
+  * @brief  使能硬件定时器中断
+  * @param  pTimerUs	主结构体指针
   */
 void TimerUs_HAL_EnableTimIt( TimerUs_TypeDef *pTimerUs );
 
 /**
-  * @brief  ʧ��Ӳ����ʱ���ж�
-  * @param  pTimerUs	���ṹ��ָ��
+  * @brief  失能硬件定时器中断
+  * @param  pTimerUs	主结构体指针
   */
 void TimerUs_HAL_DisableTimIt( TimerUs_TypeDef *pTimerUs );
 
@@ -181,52 +181,52 @@ void TimerUs_HAL_DisableTimIt( TimerUs_TypeDef *pTimerUs );
   */
 
 /**
-  * @brief  Ӳ����ʱ���жϺ���
-  * @param  pTimerUs    ��ʱ�����ṹ��ָ��
+  * @brief  硬件定时器中断函数
+  * @param  pTimerUs    定时器主结构体指针
   */
 void TimerUs_IT( TimerUs_TypeDef *pTimerUs );
 
 /**
-  * @brief  ��ʼ����ʱ���ṹ��
-  * @param  pTimerUs    ��ʱ�����ṹ��ָ��
-  * @param  TimHandle   Ӳ����ʱ�������ָ�룩
+  * @brief  初始化定时器结构体
+  * @param  pTimerUs    定时器主结构体指针
+  * @param  TimHandle   硬件定时器句柄（指针）
   */
  void TimerUs_Init( TimerUs_TypeDef *pTimerUs, void * TimHandle );
 
 /**
-  * @brief  ����һ����ʱ����
-  * @param  pTimerUs    ��ʱ�����ṹ��ָ��
-  * @param  pFun        ��ʱ�жϻص�����,����һ��u8������ָ���������
-  * @return ����������ţ�С��0��ʾ����ʧ��
+  * @brief  创建一个定时任务
+  * @param  pTimerUs    定时器主结构体指针
+  * @param  pFun        定时中断回调函数,存在一个u8参数，指明任务序号
+  * @return 返回任务序号，小于0表示创建失败
   */
 int8_t TimerUs_TaskCreate( TimerUs_TypeDef *pTimerUs, void ( *pFun)(void) );
 
 /**
-  * @brief  ���ö�ʱ������
-  * @note	������Χ�޶���us���ô���65534������С��2��
-  * 		TaskNum���ô���TimerUs_TASK_NUMMAX
-  * @param  TaskNum	��ʱ���������
-  * @param  us		��ʱʱ�䣬��λus
-  * @param  use_it	�Ƿ�ʹ���жϻص�
-  * @return �ɹ����
-  * @retval 0	�ɹ�
-  * 		-1	ʧ��
-  * 		-2	��æ
+  * @brief  启用定时器任务
+  * @note	参数范围限定，us不得大于65534，不得小于2，
+  * 		TaskNum不得大于TimerUs_TASK_NUMMAX
+  * @param  TaskNum	定时器任务序号
+  * @param  us		定时时间，单位us
+  * @param  use_it	是否使用中断回调
+  * @return 成功与否
+  * @retval 0	成功
+  * 		-1	失败
+  * 		-2	繁忙
   */
 int8_t TimerUs_Start( TimerUs_TypeDef *pTimerUs, uint8_t TaskNum, uint16_t us, uint8_t use_it);
 
 /**
-  * @brief  ��ѯָ����ʱ�����Ƿ����
-  * @param  TaskNum	��ʱ���������
-  * @return 0δ��������δ��ʼ���ߴ���1��ʱ�������
+  * @brief  查询指定定时任务是否完成
+  * @param  TaskNum	定时器任务序号
+  * @return 0未结束或者未开始或者错误，1定时任务结束
   */
 uint8_t TimerUs_IsDone( TimerUs_TypeDef *pTimerUs, uint8_t TaskNum );
 
 /**
-  * @brief  ��ֹ������ʱ������
-  * @note	�ڶ�ʱ���񵽴�ָ��ʱ�䲢���лص�֮ǰ�����øú���������Ӷ�ʱ����������޳�������
-  * @param  pTimerUs    ��ʱ�����ṹ��ָ��
-  * @param  TaskNum	��ʱ���������
+  * @brief  中止正在延时的任务
+  * @note	在定时任务到达指定时间并进行回调之前，调用该函数，将会从定时任务队列中剔除该任务
+  * @param  pTimerUs    定时器主结构体指针
+  * @param  TaskNum	定时器任务序号
   */
 void TimerUs_AbortTask( TimerUs_TypeDef *pTimerUs, uint8_t TaskNum );
 
@@ -267,7 +267,7 @@ void TimerUs_AbortTask( TimerUs_TypeDef *pTimerUs, uint8_t TaskNum );
   * @}
   */
 
-///TimerUs�������������
+///TimerUs分组结束花括号
 /**
   * @}
   */
